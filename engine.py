@@ -14,7 +14,7 @@ class Board:
 
     See Example.ipynb.
     """
-    CARDS_DRAWN_BY_epidemic_LVL = [2, 2, 2, 3, 3, 4, 4, 5]
+    CARDS_DRAWN_BY_EPIDEMIC_LVL = [2, 2, 2, 3, 3, 4, 4, 5]
 
     def __init__(self, list_cities_cards_cubes):
         self.cities = [city for (city, card, cube) in list_cities_cards_cubes]
@@ -35,7 +35,7 @@ class Board:
 
     @property
     def num_cards_to_draw(self):
-        return self.CARDS_DRAWN_BY_epidemic_LVL[self.num_epidemic]
+        return self.CARDS_DRAWN_BY_EPIDEMIC_LVL[self.num_epidemic]
 
     @property
     def num_left_cards(self):
