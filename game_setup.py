@@ -1,22 +1,28 @@
 # city - num_bad_cards - num_cubes_placed
 LIST_CITIES_CARDS_CUBES = [
-    ('tripoli',       3, 2),
-    ('istanbul',      3, 2),
+    ('tripoli',       3, 3),
+    ('istanbul',      3, 3),
     ('cairo',         3, 3),
     ('london',        3, 3),
 
-    ('lagos',         3, 3),
+    ('lagos',         3, 2),
     ('sao_paolo',     3, 2),
 
-    ('new_york',      3, 3),
-    ('washington',    3, 4),
+    ('new_york',      3, 2),
+    ('washington',    3, 2),
     ('jacksonville',  3, 2),
 
-    ('chicago',       2, 3),
+    ('chicago',       2, 2),
     ('atlanta',       1, 1),
     ('denver',        2, 2),
-    ('los_angeles',   1, 0),
-    ('san_francisco', 2, 0),
+    ('los_angeles',   1, 1),
+    ('san_francisco', 2, 2),
+    ('paris',         2, 0),
+#     ('mexico',     1, 0),
+#     ('frankfurt',     2, 0),
+#     ('st_peterburg',  1, 0),
+#     ('moscow',     1, 0),
+
 ]
 
 ###
