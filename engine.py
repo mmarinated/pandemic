@@ -1,6 +1,8 @@
 from collections import Counter
 from cycler import cycle
 
+import qgrid
+import pandas as pd
 
 class Board:
     """
@@ -110,26 +112,29 @@ class Board:
         cubes = self._cubes_by_city[city]
         cards_on_top = self._stack_of_counters[-1][city]
         prob_of_being_drawing = self.num_cards_to_draw * cards_on_top / self.num_left_cards
+        prob_of_being_drawing = min(prob_of_being_drawing, cards_on_top)
         failure_chance = prob_of_being_drawing - cubes
-        return [city, cubes, cards_on_top, prob_of_being_drawing, failure_chance]
+        discarded = self._discarded[city]
 
+        try:
+            next_stack = self._stack_of_counters[-2][city]
+        except:
+            next_stack = 0
 
-    @staticmethod
-    def _descr():
-        return f'{"City":20s}{"E[future_left]":16}{"Prob":10}{"Num cards":15}{"Num cubes"}' + '\n' + (70*'-') + '\n'
+        return [city, cubes, cards_on_top, prob_of_being_drawing,
+                failure_chance, discarded, next_stack]
 
-    @staticmethod
-    def _fmt_city_stats(city, cubes, cards_on_top, prob_of_being_drawing, failure_chance):
-        fmt_failure_chance = 20 + (failure_chance < 0)
-        return f'{city:{fmt_failure_chance}s}'\
-               f'{-failure_chance:.2f}{"":11s}'\
-               f'{prob_of_being_drawing:.2f}{"":10s}'\
-               f'{cards_on_top}{"":15s}'\
-               f'{cubes}'
+    def __call__(self):
+        list_stats = [self.get_city_stats(city) for city in self.cities]
+        columns = ['city', 'cubes', 'cards_on_top', 'prob_of_being_drawing',
+                   'failure_chance', 'discarded', 'next_stack']
+        df = pd.DataFrame(list_stats, columns=columns)
 
-    def __repr__(self):
-        list_stats = sorted([self.get_city_stats(city) for city in self.cities], key=lambda x: -x[-1])
-        list_stats = [self._fmt_city_stats(*stats) for stats in list_stats]
+        df.index, df.index.name = df['city'], "City"
+        df.drop(columns="city", inplace=True)
 
-        return self._descr() + "\n".join(list_stats)
+        df = df[['failure_chance', 'prob_of_being_drawing', 'cards_on_top',
+                 'cubes', 'discarded', 'next_stack']]
+        df.sort_values(by=['failure_chance', 'cards_on_top'], ascending=False, inplace=True)
 
+        return qgrid.show_grid(df, precision=2)
