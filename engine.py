@@ -1,5 +1,5 @@
 from collections import Counter
-from cycler import cycle
+from cycler      import cycle
 
 import qgrid
 import pandas as pd
@@ -20,22 +20,32 @@ class Board:
     """
     CARDS_DRAWN_BY_EPIDEMIC_LVL = [2, 2, 2, 3, 3, 4, 4, 5]
 
-    def __init__(self, list_cities_cards_cubes, list_of_players):
+    def __init__(self, list_cities_cards_cubes, list_of_players, num_actions,
+                 num_produce_supplies=7, num_portable_lab=3):
         self.list_of_players = cycle(list_of_players)
-        # so first draw does not count
-        for i in range(len(list_of_players) - 1):
-            next(self.list_of_players)
 
-        self.cities = [city for (city, card, cube) in list_cities_cards_cubes]
-        cards = [card for (city, card, cube) in list_cities_cards_cubes]
-        cubes = [cube for (city, card, cube) in list_cities_cards_cubes]
+        cities = [city for (city, good, card, cube) in list_cities_cards_cubes]
+        good   = [good for (city, good, card, cube) in list_cities_cards_cubes]
+        cards  = [card for (city, good, card, cube) in list_cities_cards_cubes]
+        cubes  = [cube for (city, good, card, cube) in list_cities_cards_cubes]
 
+        self.num_good_cards = sum(good)
+        self.num_epidemic_cards = _detect_number_of_epidemics(self.num_good_cards)
+        print(f"Num good cards: {self.num_good_cards}, "
+              f"num_epidemic: {self.num_epidemic_cards}")
+        self.num_good_cards += (num_actions + num_produce_supplies + num_portable_lab)
+        self._till_epidemic = self.num_good_cards // self.num_epidemic_cards
+        self.counter_till_epidemic = self._till_epidemic
+
+        self.cities = cities
         self._stack_of_counters = [Counter(dict(zip(self.cities, cards)))]
         self._discarded = Counter()
         self._cubes_by_city = Counter(dict(zip(self.cities, cubes)))
         self._plague_cubes_by_city = Counter()
         self.emergency_level = 0
         self.num_epidemic = 0
+        self._is_first_move = True
+        self.inoculated_cards = Counter()
 
 
     def show_stack(self):
@@ -81,15 +91,27 @@ class Board:
 
     def epidemic(self, city):
         self.num_epidemic += 1
+        self.counter_till_epidemic += self._till_epidemic
         self._discard_card(city, 0) # from bottom of stack
         self.remove(city, max(self._cubes_by_city[city], 1))
         self._stack_of_counters.append(self._discarded.copy())
         self._discarded = Counter()
 
     def draw(self, *cities):
-        print(f"{next(self.list_of_players)}'s turn ended.")
+        if not self._is_first_move:
+            print(f"{next(self.list_of_players)}'s turn ended.")
+            self.num_good_cards -= len(cities)
+            self.counter_till_epidemic -= len(cities)
+
+        self._is_first_move = False
+
         for city in cities:
             self._draw_one(city)
+
+    def inoculate(self, city, num=1):
+        assert self._discarded[city] >= num
+        self._discarded[city] -= num
+        self.inoculated_cards[city] += num
 
     def _draw_one(self, city):
         self._discard_card(city)
@@ -125,6 +147,7 @@ class Board:
                 failure_chance, discarded, next_stack]
 
     def __call__(self):
+        print(f"Cards till epidemic: {self.counter_till_epidemic}.")
         list_stats = [self.get_city_stats(city) for city in self.cities]
         columns = ['city', 'cubes', 'cards_on_top', 'prob_of_being_drawing',
                    'failure_chance', 'discarded', 'next_stack']
@@ -138,3 +161,19 @@ class Board:
         df.sort_values(by=['failure_chance', 'cards_on_top'], ascending=False, inplace=True)
 
         return qgrid.show_grid(df, precision=2)
+
+
+
+def _detect_number_of_epidemics(num_cards):
+    if num_cards <= 36:
+        return 5
+    elif num_cards <= 44:
+        return 6
+    elif num_cards <= 51:
+        return 7
+    elif num_cards <= 57:
+        return 8
+    elif num_cards <= 62:
+        return 9
+    else:
+        return 10
