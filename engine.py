@@ -137,11 +137,7 @@ class Board:
         prob_of_being_drawing = min(prob_of_being_drawing, cards_on_top)
         failure_chance = prob_of_being_drawing - cubes
         discarded = self._discarded[city]
-
-        try:
-            next_stack = self._stack_of_counters[-2][city]
-        except:
-            next_stack = 0
+        next_stack = self._stack_of_counters[-2][city] if len(self._stack_of_counters) >= 2 else 0
 
         return [city, cubes, cards_on_top, prob_of_being_drawing,
                 failure_chance, discarded, next_stack]

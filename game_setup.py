@@ -4,7 +4,6 @@ LIST_CITIES_CARDS_CUBES = [
     ('istanbul',      4, 3, 3),
     ('cairo',         4, 3, 2),
 
-
     ('new_york',      4, 3, 3),
     ('washington',    4, 3, 3),
     ('jacksonville',  4, 3, 3),
