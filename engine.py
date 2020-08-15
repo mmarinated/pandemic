@@ -20,7 +20,8 @@ class Board:
     """
     CARDS_DRAWN_BY_EPIDEMIC_LVL = [2, 2, 2, 3, 3, 4, 4, 5]
 
-    def __init__(self, list_cities_cards_cubes, list_of_players, num_actions,
+    def __init__(self, list_cities_cards_cubes,
+                 list_of_players, num_actions,
                  num_produce_supplies=7, num_portable_lab=3):
         self.list_of_players = cycle(list_of_players)
 
