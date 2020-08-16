@@ -7,11 +7,14 @@ import pandas as pd
 class Board:
     """
     Has 4 methods:
-    - add:       if one adds cubes to the city
-    - remove:    if one removes cubes from the city
-    - draw:      infection step, may pass several cards at once.
-                 Calls "remove" automatically.
-    - epidemic:  epidemic happens
+    - add:          if one adds cubes to the city
+    - remove:       if one removes cubes from the city
+    - draw:         infection step, may pass several cards at once.
+                    Calls "remove" automatically.
+    - epidemic:     epidemic happens
+    - move:         move from one city to an adjacent (free acvtion)
+    - draw_hollow:  cities that are drawn after "hollow man" card is draws
+    - inoculate:    performs incoluate action for *infection* cards.
 
     list of known cities and number of cubes places should be manually maintained
     in game_setup.py
