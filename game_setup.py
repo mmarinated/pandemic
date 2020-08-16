@@ -7,37 +7,51 @@ LIST_CITIES_CARDS_CUBES = [
     ('new_york',      4, 3 - 1, 2),
     ('washington',    4, 3 - 1, 2),
     ('jacksonville',  4, 3,     2),
-    ('chicago',       2, 2,     2),
+    ('chicago',       2, 2,     1),
     ('atlanta',       1, 1,     1),
-    ('denver',        2, 2,     2),
+    ('denver',        2, 2,     1),
     ('los_angeles',   1, 1 - 1, 0),
     ('san_francisco', 2, 2,     2),
     ('mexico_city',   1, 1,     1),
 
-    ('london',        4, 3,     2),
+    ('london',        4, 3 - 2, 2),
     ('paris',         2, 2,     2),
     ('frankfurt',     2, 2,     2),
-    ('st_peterburg',  1, 1,     2),
-    ('moscow',        1, 1,     2),
+    ('st_peterburg',  1, 1,     1),
+    ('moscow',        1, 1 - 1, 2),
 
     ('sao_paolo',     4, 3,     2),
-    ('buenos_aires',  2, 2 - 1, 2),
+    ('buenos_aires',  2, 2 - 2, 1),
     ('lima',          1, 1 - 1, 0),
-    ('bogota',        2, 2,     2),
-    ('santiago',      1, 1,     1),
+    ('bogota',        2, 2 - 1, 2),
+    ('santiago',      1, 1 - 1, 1),
 
     ('lagos',         4, 3,     2),
-    ('kinshasa',      1, 1,     0),
+    ('kinshasa',      1, 1,     1),
     # ('khartoum',      1, 1,     0),
     # ('johannesbourg', 2, 2,     0),
     # ('antananarivo',  2, 2,     0),
     # ('dar_es_salam',  2, 2,     0),
+
+    ('baghdad',       2, 2, 0),
+    # ('riyadh',        2, 2, 0),
+    # ('tehran',        1, 1, 0),
+    # ('delhi',         1, 1, 0),
+    # ('mumbai',        2, 2, 0),
+    # ('kolkata',       1, 1, 0),
 ]
 
+print(f"{'City':20s} {'bad':10} {'cubes'}")
 
 for city, _, bad, cubes in LIST_CITIES_CARDS_CUBES:
     if cubes > bad:
-        print(f"City={city} has bad={bad}, cubes={cubes}")
+        print(f"{city:20s} {bad}{'':10s} {cubes}")
+
+print('-' * 30)
+
+for city, _, bad, cubes in LIST_CITIES_CARDS_CUBES:
+    if bad > cubes:
+        print(f"{city:20s} {bad}{'':10s} {cubes}")
 
 ###
 ## Helpers

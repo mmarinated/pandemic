@@ -21,7 +21,7 @@ class Board:
     CARDS_DRAWN_BY_EPIDEMIC_LVL = [2, 2, 2, 3, 3, 4, 4, 5]
 
     def __init__(self, list_cities_cards_cubes,
-                 list_of_players, num_actions,
+                 list_of_players, num_events_cards,
                  num_produce_supplies=7, num_portable_lab=3):
         self.list_of_players = cycle(list_of_players)
 
@@ -34,7 +34,7 @@ class Board:
         self.num_epidemic_cards = _detect_number_of_epidemics(self.num_good_cards)
         print(f"Num good cards: {self.num_good_cards}, "
               f"num_epidemic: {self.num_epidemic_cards}")
-        self.num_good_cards += (num_actions + num_produce_supplies + num_portable_lab)
+        self.num_good_cards += (num_events_cards + num_produce_supplies + num_portable_lab)
         self._till_epidemic = self.num_good_cards // self.num_epidemic_cards
         self.counter_till_epidemic = self._till_epidemic
 
@@ -89,6 +89,10 @@ class Board:
             self.emergency_level += 1
             self._cubes_by_city[city] = 0
             self._plague_cubes_by_city[city] += abs(left)
+
+    def move(self, from_city, to_city, num=1):
+        self.remove(from_city, num=num)
+        self.add(to_city, num=num)
 
     def epidemic(self, city):
         self.num_epidemic += 1
