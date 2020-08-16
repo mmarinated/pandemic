@@ -46,7 +46,9 @@ class Board:
         self.emergency_level = 0
         self.num_epidemic = 0
         self._is_first_move = True
+
         self.inoculated_cards = Counter()
+        self.hollowed_cities = Counter()
 
 
     def show_stack(self):
@@ -112,6 +114,14 @@ class Board:
 
         for city in cities:
             self._draw_one(city)
+
+    def draw_hollow(self, *cities):
+        for city in cities:
+            self._draw_one_hollow(city)
+
+    def _draw_one_hollow(self, city):
+        self._discard_card(city)
+        self.hollowed_cities[city] += 1
 
     def inoculate(self, city, num=1):
         assert self._discarded[city] >= num
