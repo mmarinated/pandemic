@@ -25,8 +25,10 @@ class Board:
 
     def __init__(self, list_cities_cards_cubes,
                  list_of_players, num_events_cards,
-                 num_produce_supplies=7, num_portable_lab=3):
+                 num_produce_supplies=7, num_portable_lab=3,
+                 has_found_jade=True):
         self.list_of_players = cycle(list_of_players)
+        self.has_found_jade = has_found_jade
 
         cities = [city for (city, good, card, cube) in list_cities_cards_cubes]
         good   = [good for (city, good, card, cube) in list_cities_cards_cubes]
@@ -42,6 +44,7 @@ class Board:
         self.counter_till_epidemic = self._till_epidemic
 
         self.cities = cities
+        self._num_cards_by_city = Counter(dict(zip(self.cities, cards)))
         self._stack_of_counters = [Counter(dict(zip(self.cities, cards)))]
         self._discarded = Counter()
         self._cubes_by_city = Counter(dict(zip(self.cities, cubes)))
@@ -103,7 +106,8 @@ class Board:
         self.num_epidemic += 1
         self.counter_till_epidemic += self._till_epidemic
         self._discard_card(city, 0) # from bottom of stack
-        self.remove(city, max(self._cubes_by_city[city], 1))
+        num_draw = 1 if self.has_found_jade else max(self._cubes_by_city[city], 1)
+        self.remove(city, num_draw)
         self._stack_of_counters.append(self._discarded.copy())
         self._discarded = Counter()
 
@@ -126,9 +130,14 @@ class Board:
         self._discard_card(city)
         self.hollowed_cities[city] += 1
 
-    def inoculate(self, city, num=1):
-        assert self._discarded[city] >= num
-        self._discarded[city] -= num
+    def inoculate(self, city, num=1, from_discarded=True):
+        if from_discarded:
+            assert self._discarded[city] >= num
+            self._discarded[city] -= num
+        else:
+            assert self._stack_of_counters[-1][city] >= num
+            self._stack_of_counters[-1][city] -= num
+
         self.inoculated_cards[city] += num
 
     def _draw_one(self, city):
@@ -156,22 +165,24 @@ class Board:
         failure_chance = prob_of_being_drawing - cubes
         discarded = self._discarded[city]
         next_stack = self._stack_of_counters[-2][city] if len(self._stack_of_counters) >= 2 else 0
+        num_total = self._num_cards_by_city[city] - self.inoculated_cards[city]
 
         return [city, cubes, cards_on_top, prob_of_being_drawing,
-                failure_chance, discarded, next_stack]
+                failure_chance, discarded, next_stack, num_total]
 
     def __call__(self):
         print(f"Cards till epidemic: {self.counter_till_epidemic}.")
         list_stats = [self.get_city_stats(city) for city in self.cities]
         columns = ['city', 'cubes', 'cards_on_top', 'prob_of_being_drawing',
-                   'failure_chance', 'discarded', 'next_stack']
+                   'failure_chance', 'discarded', 'next_stack', 'num_total']
         df = pd.DataFrame(list_stats, columns=columns)
+        df = df[df['num_total'] > 0]
 
         df.index, df.index.name = df['city'], "City"
         df.drop(columns="city", inplace=True)
 
         df = df[['failure_chance', 'prob_of_being_drawing', 'cards_on_top',
-                 'cubes', 'discarded', 'next_stack']]
+                 'cubes', 'discarded', 'next_stack', 'num_total']]
         df.sort_values(by=['failure_chance', 'cards_on_top'], ascending=False, inplace=True)
 
         return qgrid.show_grid(df, precision=2)
