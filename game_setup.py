@@ -4,12 +4,12 @@ LIST_CITIES_CARDS_CUBES = [
     ('istanbul',      4, 3,     2),
     ('cairo',         4, 3,     2),
 
-    ('new_york',      4, 3 - 1, 2),
+    ('new_york',      4, 3 * 0, 2),
     ('washington',    4, 3 - 1, 2),
     ('jacksonville',  4, 3,     2),
     ('chicago',       2, 2,     1),
     ('atlanta',       1, 1 - 1, 0),
-    ('denver',        2, 2,     1),
+    ('denver',        2, 2 - 1, 1),
     ('los_angeles',   1, 1 - 1, 0),
     ('san_francisco', 2, 2 * 0, 0),
     ('mexico_city',   1, 1 - 1, 0),
@@ -28,16 +28,16 @@ LIST_CITIES_CARDS_CUBES = [
 
     ('lagos',         4, 3 - 3, 0),
     ('kinshasa',      1, 1,     2),
-    # ('khartoum',      1, 1,     0),
     ('johannesbourg', 2, 2,     2),
-    # ('antananarivo',  2, 2,     0),
     ('dar_es_salam',  2, 2,     2),
+    # ('antananarivo',  2, 2,     0),
+    # ('khartoum',      1, 1,     0),
 
     ('baghdad',       2, 2,     2),
-    # ('riyadh',        2, 2, 0),
-    ('tehran',        1, 1, 0),
+    ('tehran',        1, 1,     0),
+    ('mumbai',        2, 2,     0),
     # ('delhi',         1, 1, 0),
-    ('mumbai',        2, 2, 0),
+    # ('riyadh',        2, 2, 0),
     # ('kolkata',       1, 1, 0),
 ]
 
